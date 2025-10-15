@@ -9,82 +9,138 @@
       padding: 0;
     }
 
+    @keyframes grain {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-5%, -10%); }
+      20% { transform: translate(-15%, 5%); }
+      30% { transform: translate(7%, -25%); }
+      40% { transform: translate(-5%, 25%); }
+      50% { transform: translate(-15%, 10%); }
+      60% { transform: translate(15%, 0%); }
+      70% { transform: translate(0%, 15%); }
+      80% { transform: translate(3%, 35%); }
+      90% { transform: translate(-10%, 10%); }
+    }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      padding: 16px;
-      background: #ffffff;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      width: 200%;
+      height: 200vh;
+      background: transparent url('data:image/svg+xml,%3Csvg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.3"/%3E%3C/svg%3E') repeat;
+      animation: grain 8s steps(10) infinite;
+      pointer-events: none;
+      opacity: 0.5;
     }
 
     .container {
-      max-width: 400px;
+      max-width: 500px;
       margin: 0 auto;
+      padding: 24px;
+      position: relative;
+      z-index: 1;
     }
 
     h2 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: #000;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      letter-spacing: -0.5px;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
     }
 
     .input-group {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     label {
       display: block;
-      font-size: 12px;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #333;
-    }
-
-    textarea, input {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-      font-family: inherit;
-      resize: vertical;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     textarea {
-      min-height: 80px;
-    }
-
-    textarea:focus, input:focus {
-      outline: none;
-      border-color: #18a0fb;
-    }
-
-    button {
       width: 100%;
-      padding: 10px;
-      background: #18a0fb;
-      color: white;
-      border: none;
-      border-radius: 4px;
+      padding: 14px 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
       font-size: 14px;
-      font-weight: 500;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
+      background: rgba(255, 255, 255, 0.9);
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.3s ease;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
-    button:hover {
-      background: #1591e8;
+    .generate-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
     }
 
-    button:disabled {
-      background: #ccc;
+    .generate-btn:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
+      transform: none;
     }
 
     .loading {
       display: none;
       text-align: center;
-      margin: 16px 0;
-      color: #666;
+      margin: 20px 0;
+      color: #fff;
+      font-weight: 500;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     .loading.active {
@@ -92,10 +148,6 @@
     }
 
     .results {
-      margin-top: 20px;
-      padding: 16px;
-      background: #f5f5f5;
-      border-radius: 8px;
       display: none;
     }
 
@@ -103,71 +155,210 @@
       display: block;
     }
 
-    .result-section {
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
       margin-bottom: 16px;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
-    .result-section:last-child {
-      margin-bottom: 0;
+    .option-grid {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
-    .result-title {
-      font-size: 13px;
+    .option-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+    }
+
+    .option-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .option-card.selected {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .font-option {
+      font-size: 14px;
       font-weight: 600;
-      margin-bottom: 8px;
-      color: #000;
-    }
-
-    .result-content {
-      font-size: 12px;
       color: #333;
-      line-height: 1.5;
+      margin-bottom: 4px;
     }
 
-    .color-palette {
+    .font-preview {
+      font-size: 11px;
+      color: #666;
+    }
+
+    .size-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .size-item {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .size-label {
+      font-weight: 700;
+      color: #333;
+    }
+
+    .palette-container {
+      display: grid;
+      gap: 16px;
+    }
+
+    .palette-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+    }
+
+    .palette-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .palette-card.selected {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .palette-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    .color-swatches {
       display: flex;
       gap: 8px;
-      flex-wrap: wrap;
     }
 
     .color-swatch {
-      width: 50px;
-      height: 50px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
+      flex: 1;
+      height: 60px;
+      border-radius: 8px;
+      border: 2px solid rgba(0,0,0,0.1);
       position: relative;
-      cursor: pointer;
     }
 
-    .color-label {
+    .color-name {
       font-size: 9px;
       text-align: center;
       margin-top: 4px;
       color: #666;
+      font-weight: 600;
     }
 
-    .font-item {
-      padding: 8px;
-      background: white;
+    .spacing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .spacing-item {
+      text-align: center;
+    }
+
+    .spacing-visual {
+      margin: 0 auto 8px;
+      background: #667eea;
       border-radius: 4px;
-      margin-bottom: 8px;
-      border: 1px solid #ddd;
+    }
+
+    .spacing-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .spacing-value {
+      font-size: 11px;
+      color: #666;
+    }
+
+    .recommendations-list {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .rec-item {
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 12px;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .rec-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .rec-item::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: #667eea;
+      font-weight: bold;
     }
 
     .apply-btn {
-      margin-top: 16px;
-      background: #7b61ff;
+      width: 100%;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
     .apply-btn:hover {
-      background: #6c52e0;
+      background: rgba(255, 255, 255, 0.35);
+      border-color: rgba(255, 255, 255, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     }
 
     .error {
-      color: #f24822;
-      font-size: 12px;
-      margin-top: 8px;
+      color: #ff6b6b;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 12px;
       display: none;
+      font-weight: 500;
     }
 
     .error.active {
@@ -177,56 +368,66 @@
 </head>
 <body>
   <div class="container">
-    <h2>AI Design Assistant</h2>
+    <h2>✨ AI Design Assistant</h2>
     
-    <div class="input-group">
-      <label for="apiKey">Gemini API Key</label>
-      <input type="password" id="apiKey" placeholder="Enter your Gemini API key">
-    </div>
+    <div class="glass-card">
+      <div class="input-group">
+        <label for="projectDescription">What are you designing?</label>
+        <textarea 
+          id="projectDescription" 
+          placeholder="E.g., A modern e-commerce website for selling sustainable fashion products aimed at millennials"
+        ></textarea>
+      </div>
 
-    <div class="input-group">
-      <label for="projectDescription">What are you designing?</label>
-      <textarea 
-        id="projectDescription" 
-        placeholder="E.g., A modern e-commerce website for selling sustainable fashion products aimed at millennials"
-      ></textarea>
-    </div>
+      <button class="generate-btn" id="generateBtn">Generate Design Magic ✨</button>
+      
+      <div class="loading" id="loading">
+        <p>🎨 AI is crafting your design...</p>
+      </div>
 
-    <button id="generateBtn">Generate Design Suggestions</button>
-    
-    <div class="loading" id="loading">
-      <p>🤖 AI is analyzing your project...</p>
+      <div class="error" id="error"></div>
     </div>
-
-    <div class="error" id="error"></div>
 
     <div class="results" id="results">
-      <div class="result-section">
-        <div class="result-title">Typography</div>
-        <div class="result-content" id="typography"></div>
+      <!-- Typography Section -->
+      <div class="glass-card">
+        <div class="section-title">Typography</div>
+        
+        <label style="font-size: 12px; margin-bottom: 8px;">Heading Font (choose one)</label>
+        <div class="option-grid" id="headingOptions"></div>
+        
+        <label style="font-size: 12px; margin-bottom: 8px; margin-top: 12px;">Body Font (choose one)</label>
+        <div class="option-grid" id="bodyOptions"></div>
+        
+        <label style="font-size: 12px; margin-bottom: 8px; margin-top: 12px;">Size Scale (choose one)</label>
+        <div class="option-grid" id="sizeOptions"></div>
       </div>
 
-      <div class="result-section">
-        <div class="result-title">Color Palette</div>
-        <div class="color-palette" id="colorPalette"></div>
+      <!-- Color Palettes -->
+      <div class="glass-card">
+        <div class="section-title">Color Palettes (choose one)</div>
+        <div class="palette-container" id="palettes"></div>
       </div>
 
-      <div class="result-section">
-        <div class="result-title">Spacing Guidelines</div>
-        <div class="result-content" id="spacing"></div>
+      <!-- Spacing -->
+      <div class="glass-card">
+        <div class="section-title">Spacing Guidelines</div>
+        <div class="spacing-grid" id="spacing"></div>
       </div>
 
-      <div class="result-section">
-        <div class="result-title">Design Recommendations</div>
-        <div class="result-content" id="recommendations"></div>
+      <!-- Recommendations -->
+      <div class="glass-card">
+        <div class="section-title">Design Recommendations</div>
+        <div class="recommendations-list" id="recommendations"></div>
       </div>
 
-      <button class="apply-btn" id="applyBtn">Apply Styles to Figma</button>
+      <button class="apply-btn" id="applyBtn">Apply Selected Styles to Figma 🚀</button>
     </div>
   </div>
 
   <script>
-    const apiKeyInput = document.getElementById('apiKey');
+    const GEMINI_API_KEY = 'AIzaSyBOBEdrEK5taeQvz5ml0vpenMG9AkxPvWg'; // Replace with your actual API key
+    
     const projectInput = document.getElementById('projectDescription');
     const generateBtn = document.getElementById('generateBtn');
     const loading = document.getElementById('loading');
@@ -235,15 +436,13 @@
     const applyBtn = document.getElementById('applyBtn');
 
     let currentSuggestions = null;
+    let selectedHeading = 0;
+    let selectedBody = 0;
+    let selectedSize = 0;
+    let selectedPalette = 0;
 
     generateBtn.addEventListener('click', async () => {
-      const apiKey = apiKeyInput.value.trim();
       const description = projectInput.value.trim();
-
-      if (!apiKey) {
-        showError('Please enter your Gemini API key');
-        return;
-      }
 
       if (!description) {
         showError('Please describe your project');
@@ -256,7 +455,7 @@
       generateBtn.disabled = true;
 
       try {
-        const suggestions = await getDesignSuggestions(apiKey, description);
+        const suggestions = await getDesignSuggestions(description);
         currentSuggestions = suggestions;
         displayResults(suggestions);
       } catch (err) {
@@ -269,58 +468,83 @@
 
     applyBtn.addEventListener('click', () => {
       if (currentSuggestions) {
+        const selectedData = {
+          typography: {
+            headingFont: currentSuggestions.typography.headingOptions[selectedHeading],
+            bodyFont: currentSuggestions.typography.bodyOptions[selectedBody],
+            sizes: currentSuggestions.typography.sizeScales[selectedSize]
+          },
+          colors: currentSuggestions.colorPalettes[selectedPalette].colors,
+          spacing: currentSuggestions.spacing,
+          recommendations: currentSuggestions.recommendations
+        };
+        
         parent.postMessage({
           pluginMessage: {
             type: 'apply-styles',
-            data: currentSuggestions
+            data: selectedData
           }
         }, '*');
       }
     });
 
-    async function getDesignSuggestions(apiKey, description) {
+    async function getDesignSuggestions(description) {
       const prompt = `You are an expert UI/UX designer. Based on this project description, provide comprehensive design suggestions in JSON format.
 
 Project: ${description}
 
-Provide a JSON response with this exact structure:
+Provide a JSON response with this EXACT structure:
 {
   "typography": {
-    "headingFont": "Font name",
-    "bodyFont": "Font name",
-    "sizes": {
-      "h1": "size in px",
-      "h2": "size in px",
-      "h3": "size in px",
-      "body": "size in px",
-      "small": "size in px"
+    "headingOptions": ["Font Name 1", "Font Name 2", "Font Name 3"],
+    "bodyOptions": ["Font Name 1", "Font Name 2", "Font Name 3"],
+    "sizeScales": [
+      {"name": "Comfortable", "h1": "48px", "h2": "36px", "h3": "24px", "body": "16px", "small": "14px"},
+      {"name": "Compact", "h1": "40px", "h2": "32px", "h3": "20px", "body": "14px", "small": "12px"},
+      {"name": "Large", "h1": "56px", "h2": "42px", "h3": "28px", "body": "18px", "small": "16px"}
+    ]
+  },
+  "colorPalettes": [
+    {
+      "name": "Palette Name 1",
+      "colors": {
+        "primary": "#hexcode",
+        "secondary": "#hexcode",
+        "accent": "#hexcode",
+        "background": "#hexcode",
+        "text": "#hexcode"
+      }
+    },
+    {
+      "name": "Palette Name 2",
+      "colors": {
+        "primary": "#hexcode",
+        "secondary": "#hexcode",
+        "accent": "#hexcode",
+        "background": "#hexcode",
+        "text": "#hexcode"
+      }
     }
-  },
-  "colors": {
-    "primary": "#hexcode",
-    "secondary": "#hexcode",
-    "accent": "#hexcode",
-    "background": "#hexcode",
-    "text": "#hexcode"
-  },
+  ],
   "spacing": {
-    "base": "8px",
-    "small": "4px",
-    "medium": "16px",
-    "large": "32px",
-    "xlarge": "64px"
+    "xs": "4px",
+    "sm": "8px",
+    "md": "16px",
+    "lg": "32px",
+    "xl": "64px"
   },
   "recommendations": [
     "Recommendation 1",
     "Recommendation 2",
-    "Recommendation 3"
+    "Recommendation 3",
+    "Recommendation 4"
   ]
 }
 
-Only return valid JSON, no other text.`;
+IMPORTANT: Return ONLY valid JSON, no other text. Provide exactly 3 font options for heading, 3 for body, 3 size scales, 2 color palettes, and 4 recommendations.`;
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: 'POST',
           headers: {
@@ -344,7 +568,6 @@ Only return valid JSON, no other text.`;
       const data = await response.json();
       const text = data.candidates[0].content.parts[0].text;
       
-      // Extract JSON from response
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error('Invalid response from AI');
@@ -354,41 +577,116 @@ Only return valid JSON, no other text.`;
     }
 
     function displayResults(suggestions) {
-      // Typography
-      const typoDiv = document.getElementById('typography');
-      typoDiv.innerHTML = `
-        <div class="font-item">
-          <strong>Heading:</strong> ${suggestions.typography.headingFont}<br>
-          <strong>Body:</strong> ${suggestions.typography.bodyFont}<br>
-          <strong>Sizes:</strong> H1: ${suggestions.typography.sizes.h1}, H2: ${suggestions.typography.sizes.h2}, Body: ${suggestions.typography.sizes.body}
-        </div>
-      `;
-
-      // Colors
-      const colorDiv = document.getElementById('colorPalette');
-      colorDiv.innerHTML = '';
-      Object.entries(suggestions.colors).forEach(([name, hex]) => {
-        const swatch = document.createElement('div');
-        swatch.innerHTML = `
-          <div class="color-swatch" style="background-color: ${hex}"></div>
-          <div class="color-label">${name}<br>${hex}</div>
+      // Heading Options
+      const headingDiv = document.getElementById('headingOptions');
+      headingDiv.innerHTML = '';
+      suggestions.typography.headingOptions.forEach((font, i) => {
+        const card = document.createElement('div');
+        card.className = `option-card ${i === 0 ? 'selected' : ''}`;
+        card.innerHTML = `
+          <div class="font-option">${font}</div>
+          <div class="font-preview">Perfect for bold headlines</div>
         `;
-        colorDiv.appendChild(swatch);
+        card.onclick = () => selectOption('heading', i);
+        headingDiv.appendChild(card);
+      });
+
+      // Body Options
+      const bodyDiv = document.getElementById('bodyOptions');
+      bodyDiv.innerHTML = '';
+      suggestions.typography.bodyOptions.forEach((font, i) => {
+        const card = document.createElement('div');
+        card.className = `option-card ${i === 0 ? 'selected' : ''}`;
+        card.innerHTML = `
+          <div class="font-option">${font}</div>
+          <div class="font-preview">Great for readable text</div>
+        `;
+        card.onclick = () => selectOption('body', i);
+        bodyDiv.appendChild(card);
+      });
+
+      // Size Options
+      const sizeDiv = document.getElementById('sizeOptions');
+      sizeDiv.innerHTML = '';
+      suggestions.typography.sizeScales.forEach((scale, i) => {
+        const card = document.createElement('div');
+        card.className = `option-card ${i === 0 ? 'selected' : ''}`;
+        card.innerHTML = `
+          <div class="font-option">${scale.name} Scale</div>
+          <div class="size-grid">
+            <div class="size-item"><span class="size-label">H1:</span> ${scale.h1}</div>
+            <div class="size-item"><span class="size-label">H2:</span> ${scale.h2}</div>
+            <div class="size-item"><span class="size-label">Body:</span> ${scale.body}</div>
+            <div class="size-item"><span class="size-label">Small:</span> ${scale.small}</div>
+          </div>
+        `;
+        card.onclick = () => selectOption('size', i);
+        sizeDiv.appendChild(card);
+      });
+
+      // Palettes
+      const paletteDiv = document.getElementById('palettes');
+      paletteDiv.innerHTML = '';
+      suggestions.colorPalettes.forEach((palette, i) => {
+        const card = document.createElement('div');
+        card.className = `palette-card ${i === 0 ? 'selected' : ''}`;
+        card.innerHTML = `
+          <div class="palette-name">${palette.name}</div>
+          <div class="color-swatches">
+            ${Object.entries(palette.colors).map(([name, hex]) => `
+              <div>
+                <div class="color-swatch" style="background-color: ${hex}"></div>
+                <div class="color-name">${name}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        card.onclick = () => selectOption('palette', i);
+        paletteDiv.appendChild(card);
       });
 
       // Spacing
       const spacingDiv = document.getElementById('spacing');
-      spacingDiv.innerHTML = Object.entries(suggestions.spacing)
-        .map(([key, value]) => `<strong>${key}:</strong> ${value}`)
-        .join('<br>');
+      const spacingSizes = { xs: 8, sm: 16, md: 32, lg: 64, xl: 96 };
+      spacingDiv.innerHTML = Object.entries(suggestions.spacing).map(([key, value]) => `
+        <div class="spacing-item">
+          <div class="spacing-visual" style="width: ${spacingSizes[key] || 32}px; height: ${spacingSizes[key] || 32}px;"></div>
+          <div class="spacing-label">${key.toUpperCase()}</div>
+          <div class="spacing-value">${value}</div>
+        </div>
+      `).join('');
 
       // Recommendations
       const recsDiv = document.getElementById('recommendations');
       recsDiv.innerHTML = suggestions.recommendations
-        .map(rec => `• ${rec}`)
-        .join('<br>');
+        .map(rec => `<div class="rec-item">${rec}</div>`)
+        .join('');
 
       results.classList.add('active');
+    }
+
+    function selectOption(type, index) {
+      if (type === 'heading') {
+        selectedHeading = index;
+        document.querySelectorAll('#headingOptions .option-card').forEach((el, i) => {
+          el.classList.toggle('selected', i === index);
+        });
+      } else if (type === 'body') {
+        selectedBody = index;
+        document.querySelectorAll('#bodyOptions .option-card').forEach((el, i) => {
+          el.classList.toggle('selected', i === index);
+        });
+      } else if (type === 'size') {
+        selectedSize = index;
+        document.querySelectorAll('#sizeOptions .option-card').forEach((el, i) => {
+          el.classList.toggle('selected', i === index);
+        });
+      } else if (type === 'palette') {
+        selectedPalette = index;
+        document.querySelectorAll('.palette-card').forEach((el, i) => {
+          el.classList.toggle('selected', i === index);
+        });
+      }
     }
 
     function showError(message) {
