@@ -48,21 +48,43 @@ async function createTextStyles(typography) {
     ];
     for (const style of styles) {
         try {
-            // Load the font
-            await figma.loadFontAsync({ family: style.font, style: style.weight }).catch(async () => {
-                // Fallback to regular if weight not available
-                await figma.loadFontAsync({ family: style.font, style: 'Regular' });
-            });
+            // Try loading the font with specified weight
+            let fontLoaded = false;
+            let finalWeight = style.weight;
+            try {
+                await figma.loadFontAsync({ family: style.font, style: style.weight });
+                fontLoaded = true;
+            }
+            catch (e) {
+                // Try common weight alternatives
+                const weightAlternatives = ['Regular', 'Medium', 'SemiBold', 'Bold', 'Light'];
+                for (const altWeight of weightAlternatives) {
+                    try {
+                        await figma.loadFontAsync({ family: style.font, style: altWeight });
+                        finalWeight = altWeight;
+                        fontLoaded = true;
+                        break;
+                    }
+                    catch (err) {
+                        continue;
+                    }
+                }
+            }
+            if (!fontLoaded) {
+                console.warn(`Could not load font ${style.font}, skipping...`);
+                continue;
+            }
             let textStyle = figma.getLocalTextStyles().find(ts => ts.name === `AI/${style.name}`);
             if (!textStyle) {
                 textStyle = figma.createTextStyle();
                 textStyle.name = `AI/${style.name}`;
             }
             textStyle.fontSize = style.size;
-            textStyle.fontName = { family: style.font, style: style.weight };
+            textStyle.fontName = { family: style.font, style: finalWeight };
+            textStyle.lineHeight = { unit: 'PERCENT', value: 140 };
         }
         catch (error) {
-            console.error(`Could not load font ${style.font}:`, error);
+            console.error(`Error creating text style ${style.name}:`, error);
         }
     }
 }

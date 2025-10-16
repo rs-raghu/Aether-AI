@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Lato:wght@400;700&family=Raleway:wght@400;600;700&family=Source+Sans+Pro:wght@400;600;700&family=Merriweather:wght@400;700&family=Nunito:wght@400;600;700&family=Oswald:wght@400;600;700&display=swap');
+    
     * {
       box-sizing: border-box;
       margin: 0;
@@ -269,9 +271,9 @@
     }
 
     .spacing-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       background: rgba(255, 255, 255, 0.95);
       padding: 20px;
       border-radius: 12px;
@@ -279,7 +281,52 @@
     }
 
     .spacing-item {
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .spacing-box-demo {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .border-box {
+      border: 3px solid #667eea;
+      border-radius: 8px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .margin-box {
+      background: rgba(102, 126, 234, 0.1);
+      border: 2px dashed #667eea;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .padding-box {
+      background: #667eea;
+      border-radius: 4px;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spacing-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #667eea;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .spacing-visual {
@@ -577,12 +624,16 @@ IMPORTANT: Return ONLY valid JSON, no other text. Provide exactly 3 font options
     }
 
     function displayResults(suggestions) {
+      // Load Google Fonts dynamically
+      loadGoogleFonts(suggestions.typography.headingOptions.concat(suggestions.typography.bodyOptions));
+      
       // Heading Options
       const headingDiv = document.getElementById('headingOptions');
       headingDiv.innerHTML = '';
       suggestions.typography.headingOptions.forEach((font, i) => {
         const card = document.createElement('div');
         card.className = `option-card ${i === 0 ? 'selected' : ''}`;
+        card.style.fontFamily = `'${font}', sans-serif`;
         card.innerHTML = `
           <div class="font-option">${font}</div>
           <div class="font-preview">Perfect for bold headlines</div>
@@ -597,6 +648,7 @@ IMPORTANT: Return ONLY valid JSON, no other text. Provide exactly 3 font options
       suggestions.typography.bodyOptions.forEach((font, i) => {
         const card = document.createElement('div');
         card.className = `option-card ${i === 0 ? 'selected' : ''}`;
+        card.style.fontFamily = `'${font}', sans-serif`;
         card.innerHTML = `
           <div class="font-option">${font}</div>
           <div class="font-preview">Great for readable text</div>
@@ -645,16 +697,25 @@ IMPORTANT: Return ONLY valid JSON, no other text. Provide exactly 3 font options
         paletteDiv.appendChild(card);
       });
 
-      // Spacing
+      // Spacing - Box Model Visualization
       const spacingDiv = document.getElementById('spacing');
-      const spacingSizes = { xs: 8, sm: 16, md: 32, lg: 64, xl: 96 };
-      spacingDiv.innerHTML = Object.entries(suggestions.spacing).map(([key, value]) => `
-        <div class="spacing-item">
-          <div class="spacing-visual" style="width: ${spacingSizes[key] || 32}px; height: ${spacingSizes[key] || 32}px;"></div>
-          <div class="spacing-label">${key.toUpperCase()}</div>
-          <div class="spacing-value">${value}</div>
-        </div>
-      `).join('');
+      spacingDiv.innerHTML = Object.entries(suggestions.spacing).map(([key, value]) => {
+        const size = parseInt(value);
+        return `
+          <div class="spacing-item">
+            <div class="spacing-box-demo">
+              <div class="border-box" style="width: ${Math.max(size * 6, 120)}px; height: ${Math.max(size * 6, 120)}px; padding: ${size}px;">
+                <div class="margin-box" style="width: 100%; height: 100%; padding: ${size * 0.7}px;">
+                  <div class="padding-box" style="width: 100%; height: 100%;">
+                    ${size}px
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="spacing-label">${key.toUpperCase()} - ${value}</div>
+          </div>
+        `;
+      }).join('');
 
       // Recommendations
       const recsDiv = document.getElementById('recommendations');
@@ -696,6 +757,18 @@ IMPORTANT: Return ONLY valid JSON, no other text. Provide exactly 3 font options
 
     function hideError() {
       error.classList.remove('active');
+    }
+
+    function loadGoogleFonts(fonts) {
+      // Remove duplicates
+      const uniqueFonts = [...new Set(fonts)];
+      
+      // Create link element for Google Fonts
+      const fontFamilies = uniqueFonts.map(font => font.replace(/ /g, '+')).join('|');
+      const link = document.createElement('link');
+      link.href = `https://fonts.googleapis.com/css2?${uniqueFonts.map(f => `family=${f.replace(/ /g, '+')}`).join('&')}&display=swap`;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
     }
   </script>
 </body>

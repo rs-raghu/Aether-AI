@@ -11,18 +11,19 @@ figma.ui.onmessage = async (msg) => {
 
 async function applyStylesToFigma(suggestions: any) {
   try {
-    // Create or update color styles
-    await createColorStyles(suggestions.colors);
-    
-    // Create or update text styles
+    // Create or update text styles FIRST (before color styles)
     await createTextStyles(suggestions.typography);
+    
+    // Then create color styles
+    await createColorStyles(suggestions.colors);
     
     // Store spacing variables as local variables
     await createSpacingVariables(suggestions.spacing);
     
+    figma.notify('✅ Design styles applied successfully!');
   } catch (error) {
     console.error('Error applying styles:', error);
-    figma.notify('❌ Error applying some styles');
+    figma.notify('❌ Error applying some styles: ' + error);
   }
 }
 
@@ -61,11 +62,32 @@ async function createTextStyles(typography: any) {
   
   for (const style of styles) {
     try {
-      // Load the font
-      await figma.loadFontAsync({ family: style.font, style: style.weight }).catch(async () => {
-        // Fallback to regular if weight not available
-        await figma.loadFontAsync({ family: style.font, style: 'Regular' });
-      });
+      // Try loading the font with specified weight
+      let fontLoaded = false;
+      let finalWeight = style.weight;
+      
+      try {
+        await figma.loadFontAsync({ family: style.font, style: style.weight });
+        fontLoaded = true;
+      } catch (e) {
+        // Try common weight alternatives
+        const weightAlternatives = ['Regular', 'Medium', 'SemiBold', 'Bold', 'Light'];
+        for (const altWeight of weightAlternatives) {
+          try {
+            await figma.loadFontAsync({ family: style.font, style: altWeight });
+            finalWeight = altWeight;
+            fontLoaded = true;
+            break;
+          } catch (err) {
+            continue;
+          }
+        }
+      }
+      
+      if (!fontLoaded) {
+        console.warn(`Could not load font ${style.font}, skipping...`);
+        continue;
+      }
       
       let textStyle = figma.getLocalTextStyles().find(
         ts => ts.name === `AI/${style.name}`
@@ -77,10 +99,11 @@ async function createTextStyles(typography: any) {
       }
       
       textStyle.fontSize = style.size;
-      textStyle.fontName = { family: style.font, style: style.weight };
+      textStyle.fontName = { family: style.font, style: finalWeight };
+      textStyle.lineHeight = { unit: 'PERCENT', value: 140 };
       
     } catch (error) {
-      console.error(`Could not load font ${style.font}:`, error);
+      console.error(`Error creating text style ${style.name}:`, error);
     }
   }
 }
